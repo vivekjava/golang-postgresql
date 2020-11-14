@@ -1,0 +1,39 @@
+#   Ref : https://docs.tibco.com/pub/bwce/2.5.0/doc/html/GUID-E7191578-7E50-4460-93BA-2FF1621CD5B9.html
+version: '2'
+services:
+  express:
+      build: .
+      depends_on:
+        - cassandra
+      environment:
+        - NODE_ENV=production
+      ports:
+        - "8000:8000"
+      links: 
+        - cassandra
+      networks: 
+        - service
+      command: npm start
+  postgres:
+      image: postgres
+      ports:
+        - "8080:8080"
+      networks:
+        - service
+      restart: always
+  postgres:
+      image: postgres
+      hostname: postgres
+      volumes:
+#        - ./.docker/mongodb/mongod.conf:/etc/mongod.conf
+#        - ./.docker/mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+        - /data/postgresqldb/:/var/lib/postgresql/data  # system Volume : container volume
+        - /var/log/mongodb/:/var/log/mongodb/
+      ports:
+        - "8080:8080"
+      networks:
+        - service
+      restart: always
+networks:
+  service:
+    driver: "bridge"
